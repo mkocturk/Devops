@@ -23,12 +23,6 @@ variable "ssh_keys" {
   type        = list(string)
 }
 
-variable "backups" {
-  description = "Whether to enable backups"
-  type        = bool
-  default     = false
-}
-
 variable "monitoring" {
   description = "Whether to enable monitoring"
   type        = bool
@@ -46,16 +40,3 @@ variable "user_data" {
   type        = string
   default     = ""
 }
-
-variable "attach_volume" {
-  description = "Whether to attach a volume to the Droplet"
-  type        = bool
-  default     = false
-}
-
-variable "volume_size" {
-  description = "The size of the volume in GB"
-  type        = number
-  default     = 10
-}
-
