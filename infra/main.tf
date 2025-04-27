@@ -12,58 +12,16 @@ provider "digitalocean" {
   token = var.do_token
 }
 
-# Create a Droplet for the web server
-resource "digitalocean_droplet" "web" {
+module "web_server" {
+  source     = "./modules/droplet"
   image      = "ubuntu-22-04-x64"
   name       = "${local.resource_prefix}-${var.droplet_name}"
   region     = var.droplet_region
   size       = var.droplet_size
   ssh_keys   = [var.ssh_key_fingerprint]
-  backups    = var.enable_backups
   monitoring = var.enable_monitoring
   tags       = concat(["web"], local.common_tags, var.additional_tags)
-
-    user_data = <<-EOF
-    #!/bin/bash
-    set -e
-    
-    exec > >(tee -a /var/log/user-data.log) 2>&1
-    echo "Starting server provisioning at $(date)"
-    
-    wait_for_apt() {
-      while fuser /var/lib/apt/lists/lock >/dev/null 2>&1 || fuser /var/lib/dpkg/lock >/dev/null 2>&1 || fuser /var/lib/dpkg/lock-frontend >/dev/null 2>&1; do
-        echo "Waiting for apt locks..."
-        sleep 5
-      done
-    }
-    
-    echo "Updating system packages..."
-    wait_for_apt
-    apt-get update -y
-    apt-get upgrade -y
-    
-    echo "Applying security hardening..."
-    sed -i 's/PermitRootLogin yes/PermitRootLogin prohibit-password/' /etc/ssh/sshd_config
-    sed -i 's/#PasswordAuthentication yes/PasswordAuthentication no/' /etc/ssh/sshd_config
-    systemctl restart sshd
-    
-    echo "Setting up swap space..."
-    if [ ! -f /swapfile ]; then
-      fallocate -l 1G /swapfile
-      chmod 600 /swapfile
-      mkswap /swapfile
-      swapon /swapfile
-      echo '/swapfile none swap sw 0 0' >> /etc/fstab
-    fi
-    
-    echo "Configuring firewall..."
-    ufw allow 22/tcp
-    ufw allow 80/tcp
-    ufw allow 443/tcp
-    ufw --force enable
-    
-    echo "Server provisioning completed at $(date)"
-  EOF
+  user_data  = file("${path.module}/scripts/user_data.sh")
 }
 
 # Create a firewall for securing the Droplet
@@ -77,15 +35,16 @@ resource "digitalocean_firewall" "web" {
     source_addresses = var.firewall_allowed_ips
   }
 
-  # Allow HTTP
+  # Allow HTTP/HTTPS from anywhere
   dynamic "inbound_rule" {
     for_each = var.http_ports
     content {
       protocol         = "tcp"
-      port_range       = inbound_rule.value
+      port_range       = tostring(inbound_rule.value)
       source_addresses = ["0.0.0.0/0", "::/0"]
     }
   }
+  
   # Allow outbound traffic
   outbound_rule {
     protocol              = "tcp"
@@ -104,6 +63,6 @@ resource "digitalocean_firewall" "web" {
     destination_addresses = ["0.0.0.0/0", "::/0"]
   }
 
-  # Apply to Droplets with tag "web"
-  droplet_ids = [digitalocean_droplet.web.id]
+  # Apply to Droplet using the module's ID
+  droplet_ids = [module.web_server.id]
 }

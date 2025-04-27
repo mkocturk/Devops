@@ -67,7 +67,12 @@ variable "enable_monitoring" {
 variable "firewall_allowed_ips" {
   description = "List of IP addresses allowed to access the Droplet via SSH"
   type        = list(string)
-  default     = ["0.0.0.0/0"] # Allow from anywhere - consider restricting in production
+  default     = [] # Boş bırakın ve kullanıcıyı IP belirtmeye zorlayın
+
+  validation {
+    condition     = length(var.firewall_allowed_ips) > 0
+    error_message = "En az bir IP adresi veya IP bloğu belirtmelisiniz."
+  }
 }
 
 variable "http_ports" {
