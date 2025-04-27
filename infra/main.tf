@@ -20,6 +20,7 @@ module "web_server" {
   size       = var.droplet_size
   ssh_keys   = [var.ssh_key_fingerprint]
   monitoring = var.enable_monitoring
+  backups    = var.enable_backups
   tags       = concat(["web"], local.common_tags, var.additional_tags)
   user_data  = file("${path.module}/scripts/user_data.sh")
 }

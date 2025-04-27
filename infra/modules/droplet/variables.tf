@@ -40,3 +40,8 @@ variable "user_data" {
   type        = string
   default     = ""
 }
+variable "backups" {
+  description = "Whether to enable backups"
+  type        = bool
+  default     = false
+}
