@@ -1,54 +1,25 @@
-# DigitalOcean Terraform Configuration
+# DigitalOcean Infrastructure with Terraform
 
-Bu proje DigitalOcean'da Terraform kullanarak VM (Droplet) oluşturmak için gerekli konfigürasyonları içerir.
+This project contains Terraform configurations for deploying and managing infrastructure on DigitalOcean, including Droplets and firewalls.
 
-## Ön Gereksinimler
+## Infrastructure Components
 
-- [Terraform](https://www.terraform.io/downloads.html) (en son versiyon)
+- **Droplet**: Ubuntu-based virtual machine with Docker pre-installed
+- **Firewall**: Basic firewall configuration for the Droplet
+- **Tags**: Comprehensive tagging system for resource organization
+
+## Prerequisites
+
+- [Terraform](https://www.terraform.io/downloads.html) (version >= 1.0.0)
 - [DigitalOcean Account](https://cloud.digitalocean.com/registrations/new)
 - DigitalOcean API Token
-- SSH Key
+- SSH Key pair for Droplet access
 
-## Kurulum
+## Configuration
 
-1. Repo'yu klonlayın:
-```bash
-git clone <repo-url>
-cd <repo-directory>
-```
+### Environment Variables
 
-2. Environment variables'ları ayarlayın:
 ```bash
 export TF_VAR_do_token="your-digitalocean-api-token"
-export TF_VAR_ssh_key_fingerprint="your-ssh-key-fingerprint"
-```
-
-3. Terraform'u başlatın:
-```bash
-terraform init
-terraform plan
-terraform apply
-```
-
-## Değişkenler
-
-| Değişken | Açıklama |
-|----------|-----------|
-| do_token | DigitalOcean API Token |
-| droplet_name | VM adı |
-| droplet_region | Bölge (örn: fra1) |
-| droplet_size | VM boyutu (örn: s-1vcpu-1gb) |
-| ssh_key_fingerprint | SSH key fingerprint |
-
-## Güvenlik Notları
-
-- API token'ı asla GitHub'a commit etmeyin
-- Hassas bilgileri environment variable olarak saklayın
-- `.env` dosyasını `.gitignore`'a ekleyin
-
-## Temizlik
-
-Kaynakları silmek için:
-```bash
-terraform destroy
+export TF_VAR_ssh_keys='["your-ssh-key-fingerprint"]'
 ```

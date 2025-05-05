@@ -22,13 +22,6 @@ variable "ssh_keys" {
   description = "A list of SSH key fingerprints"
   type        = list(string)
 }
-
-variable "monitoring" {
-  description = "Whether to enable monitoring"
-  type        = bool
-  default     = true
-}
-
 variable "tags" {
   description = "A list of tags to apply to the Droplet"
   type        = list(string)
@@ -39,9 +32,4 @@ variable "user_data" {
   description = "User data for the Droplet"
   type        = string
   default     = ""
-}
-variable "backups" {
-  description = "Whether to enable backups"
-  type        = bool
-  default     = false
 }

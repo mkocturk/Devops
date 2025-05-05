@@ -1,0 +1,9 @@
+infra/
+├── modules/
+│   └── droplet/         # Reusable Droplet module
+├── scripts/
+│   └── user_data.sh     # Initial server setup script
+├── locals.tf            # Local variables
+├── main.tf             # Main infrastructure configuration
+├── variables.tf        # Input variables
+└── outputs.tf         # Output values

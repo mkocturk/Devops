@@ -21,5 +21,5 @@ output "firewall_id" {
 
 output "ssh_command" {
   description = "SSH command to connect to the Droplet"
-  value       = "Use: ssh -i ~/.ssh/digitalocean_devops_ssh_key ubuntu@${module.web_server.ipv4_address}"
+  value       = "Use: ssh -i ~/.ssh/digitalocean_devops_ssh_key root@${module.web_server.ipv4_address}"
 }

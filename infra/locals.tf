@@ -3,11 +3,17 @@ locals {
   project_name = "web-app"
   environment  = "production"
 
-  # Tags for better resource organization
   common_tags = [
     "project:${local.project_name}",
     "env:${local.environment}",
-    "managed-by:terraform"
+    "managed-by:terraform",
+    "owner:devops-team",
+    "cost-center:${local.project_name}-${local.environment}"
+  ]
+
+  monitoring_tags = [
+    "monitoring:enabled",
+    "alerts:enabled"
   ]
 
   # Firewall rule defaults
